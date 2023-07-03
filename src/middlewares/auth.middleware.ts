@@ -24,6 +24,19 @@ const register = async(req: Request, res:Response, next: NextFunction)=> {
      next()
 }
 
+const login = async(req: Request, res:Response, next: NextFunction)=> {
+    const valid = authModels.loginScheme.validate(req.body)
+
+    if(valid.error) {
+        res.status(403).send({
+            message: valid.error.details.map((d) => d.message).join(','),
+        })
+        return
+    }
+    next()
+}
+
 export default {
     register,
+    login,
 }
