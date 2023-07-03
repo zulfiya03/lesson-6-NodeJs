@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import authService from '../services/auth.service'
+import jwt from 'jsonwebtoken'
 
 const register = async (req: Request, res: Response) => {
   try {
@@ -12,9 +13,15 @@ const register = async (req: Request, res: Response) => {
     })
     if (!user) throw 'User not created'
     const { password: pass, ...rest } = user
+
+    const token = jwt.sign(rest, 'SECRET', {
+      expiresIn: '5m'
+    })
+    
     res.send({
       message: 'User created',
       user: rest,
+      token,
     })
   } catch (e) {
     if (e instanceof Error) {
